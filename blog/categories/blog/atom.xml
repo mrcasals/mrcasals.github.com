@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Mr. Casals]]></title>
-  <link href="http://mrcasals.github.com/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Blog | Mr. Casals]]></title>
+  <link href="http://mrcasals.github.com/blog/categories/blog/atom.xml" rel="self"/>
   <link href="http://mrcasals.github.com/"/>
   <updated>2012-02-26T19:08:10+01:00</updated>
   <id>http://mrcasals.github.com/</id>
@@ -18,39 +18,39 @@
     <link href="http://mrcasals.github.com/blog/2012/02/26/back-online/"/>
     <updated>2012-02-26T18:07:00+01:00</updated>
     <id>http://mrcasals.github.com/blog/2012/02/26/back-online</id>
-    <content type="html"><![CDATA[<p>It&#8217;s been really long since the last time I wrote a post. A lot of things have
+    <content type="html"><![CDATA[<p>It's been really long since the last time I wrote a post. A lot of things have
 happened since: I started the second semester at university, I got angry with
-the educational model they&#8217;re using there and I&#8217;m trying to change it. I started
+the educational model they're using there and I'm trying to change it. I started
 organizing the <a href="http://baruco.org/">Barcelona Ruby Conference 2012 (BaRuCo)</a> (which looks
 amazing, I must say) with the people at <a href="http://codegram.com/">Codegram</a>. I improved my
 VIm knowledge. I learned about design patterns and became kind of obsessed with
 them. I got an Android smartphone. And I found myself with the need of a place
 where to talk about all those things.</p>
 
-<p>But sometimes it&#8217;s better to get rid of everything to start again instead of
-trying to keep something alive. That&#8217;s what I did with the blog: I had one, but
-I didn&#8217;t use it. Now I find myself with the need of a place to save my thoughts
-and things I do&#8230; But I couldn&#8217;t use the older blog. It was too unupdated and I
+<p>But sometimes it's better to get rid of everything to start again instead of
+trying to keep something alive. That's what I did with the blog: I had one, but
+I didn't use it. Now I find myself with the need of a place to save my thoughts
+and things I do... But I couldn't use the older blog. It was too unupdated and I
 screwed the repo at some point, so I just deleted it and created a new one.</p>
 
-<p>I don&#8217;t need a change, I just need to start again. That&#8217;s why I&#8217;m still using
+<p>I don't need a change, I just need to start again. That's why I'm still using
 <a href="http://octopress.org/">Octopress</a>. Besides, Octopress has implemented some nice features
 since the last time I took a look at it, such as separating plugins into their
-own system or linked posts, which are still in beta (but I&#8217;d love to see them
+own system or linked posts, which are still in beta (but I'd love to see them
 merged in master). Oh, and I just love writing posts with Markdown and VIm :)</p>
 
-<p>The only drawback I find using Octopress is the lack of themes. I just can&#8217;t
-stand another blog with this layout. Too mainstream, I&#8217;d say. So I&#8217;ll try to
-create my own layout for this blog, which will be a funny challenge because I&#8217;ll
+<p>The only drawback I find using Octopress is the lack of themes. I just can't
+stand another blog with this layout. Too mainstream, I'd say. So I'll try to
+create my own layout for this blog, which will be a funny challenge because I'll
 have to design something useful <em>from zero to hero</em> and take a look at Octopress
-templating system (about which I could not find any docs&#8230; shame on you!).</p>
+templating system (about which I could not find any docs... shame on you!).</p>
 
-<p>I&#8217;m also thinking about taking a look at Octopress&#8217; plugins system, which looks
-quite nice and easy to work with. I&#8217;ve already got a plugin in mind related to
+<p>I'm also thinking about taking a look at Octopress' plugins system, which looks
+quite nice and easy to work with. I've already got a plugin in mind related to
 Spotify and it will take me to create a gem to work with its API, so three
 things in one :)</p>
 
-<p>PS: this reminds me that I have to do a cleanup to me GitHub account&#8230; So much
+<p>PS: this reminds me that I have to do a cleanup to me GitHub account... So much
 stupid repos there.</p>
 ]]></content>
   </entry>
