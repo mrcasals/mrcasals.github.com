@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ActiveRecord | Mr. Casals]]></title>
+  <link href="http://mrcasals.github.com/blog/categories/activerecord/atom.xml" rel="self"/>
+  <link href="http://mrcasals.github.com/"/>
+  <updated>2012-02-27T18:07:48+01:00</updated>
+  <id>http://mrcasals.github.com/</id>
+  <author>
+    <name><![CDATA[Marc Riera]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[An approach to DataMapper, an alternative to ActiveRecord]]></title>
+    <link href="http://mrcasals.github.com/blog/2012/02/27/approach-to-datamapper/"/>
+    <updated>2012-02-27T17:47:00+01:00</updated>
+    <id>http://mrcasals.github.com/blog/2012/02/27/approach-to-datamapper</id>
+    <content type="html"><![CDATA[<p><strong>Note</strong>: <em>I published this post for the first time at the <a href="http://blog.codegram.com/2011/11/datamapper-an-alternative-to-activerecord">Codegram blog</a>, so this is just a repost :)</em></p>
+
+<p>A few days ago we started a new project at Codegram. The project (which is still in development) is a good challenge for us and a real motivator: we all were tired of using always the same technologies, so we decided to use some tools we hadn't had opportunity to use. One of them is <a href="http://datamapper.org"><strong>DataMapper</strong></a>.</p>
+
+<h2>So what is DataMapper and why using it?</h2>
+
+<p><blockquote><p>DataMapper is an Object Relational Mapper written in Ruby. The goal is to create an ORM which is fast, thread-safe and feature rich.</p><footer><strong>DataMapper.org</strong> <cite><a href='http://datamapper.org'>datamapper.org/&hellip;</a></cite></footer></blockquote></p>
+
+<p><blockquote><p>Datamapper is an object-relational mapper library written in Ruby and commonly used with Merb. It was developed to address perceived shortcomings in Ruby on Rails' ActiveRecord library.</p><footer><strong>Wikipedia</strong> <cite><a href='http://en.wikipedia.org/wiki/Datamapper'>en.wikipedia.org/wiki/&hellip;</a></cite></footer></blockquote></p>
+
+<p>So, as the Wikipedia article says, DataMapper is an alternative to ActiveRecord. So why using it instead of the default ActiveRecord?</p>
+
+<ul>
+<li>No need to write structural migrations</li>
+<li>Scoped relations</li>
+<li>Lazy loading on certain attribute types</li>
+<li>Strategic eager loading</li>
+<li>Default support for composite and natural keys</li>
+</ul>
+
+
+<p>As you can see, DataMapper has some really interesting features. This post will be a little introduction to this ORM, let's see some of them.</p>
+
+<!--more-->
+
+
+<h2>Using DataMapper with Rails 3.1</h2>
+
+<p>First of all, we have to add Datamapper to our Rails project. I haven't found any metagem to include Rails and DataMapper basic gems, so we'll have to use this in our Gemfile:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Gemfile  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">source</span> <span class="ss">:rubygems</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;gem &#39;actionmailer&#39;</span>
+</span><span class='line'><span class="sr">gem &#39;actionpack&#39;</span>
+</span><span class='line'><span class="sr">gem &#39;activemodel&#39;</span>
+</span><span class='line'><span class="sr">gem &#39;activeresource&#39;</span>
+</span><span class='line'><span class="sr">gem &#39;activesupport&#39;</span>
+</span><span class='line'><span class="sr">gem &#39;tzinfo&#39;&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="sx">%w{core constraints migrations transactions timestamps do-adapter rails active_model sqlite-adapter}</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">dm</span><span class="o">-</span><span class="n">gem</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s2">&quot;dm-</span><span class="si">#{</span><span class="n">dm</span><span class="o">-</span><span class="n">gem</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">git</span><span class="p">:</span> <span class="s2">&quot;git://github.com/datamapper/dm-</span><span class="si">#{</span><span class="n">dm</span><span class="o">-</span><span class="n">gem</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>You can also use the <code>data_mapper</code> gem, which installs the most commonly used DataMapper gems. Visit <a href="https://github.com/datamapper/data_mapper">its GitHub page</a> for more info.</p>
+
+<h3>Our first DataMapper model</h3>
+
+<p>No more config needed! <em>What now?</em> Just start coding! Don't forget to <code>bundle install</code> first! Everything right? OK, then, here comes the important part: our first DataMapper model.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>A typical DataMapper model (app/models/book.rb)  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Book</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">DataMapper</span><span class="o">::</span><span class="no">Resource</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  # Attributes</span>
+</span><span class='line'><span class="sr">  property :id, Serial</span>
+</span><span class='line'><span class="sr">  property :title, String</span>
+</span><span class='line'><span class="sr">  property :synopsis, String</span>
+</span><span class='line'><span class="sr">  property :edition, Integer&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><em>Wow! Amazing!</em> Yeah! Looks beautiful, right? If we check the model line by line, we find that:</p>
+
+<ol>
+<li>The model no longer inherits from ActiveModel. Oh, wait, we are not using ActiveModel anymore, so looks legit.</li>
+<li>We include the <a href="https://github.com/datamapper/dm-core/blob/master/lib/dm-core/resource.rb">Resource DataMapper module</a>, which adds some basics methods and includes the Assertions module.</li>
+<li>We define the <code>id</code> attribute, which will be a Serial. You can find more info about DataMapper data types <a href="http://datamapper.org/docs/properties.html">in the wiki</a>.</li>
+<li>We define three more attributes: <code>title</code> and <code>synopsis</code> (which are <code>String</code>s) and <code>edition</code>, which is an <code>Integer</code>.</li>
+</ol>
+
+
+<p>Now that we have our model written, we have to create the database before creating our first book. Once we enter <code>rake -T</code> on our shell to see all our Rake tasks, we find two new tasks:</p>
+
+<ul>
+<li><code>rake db:automigrate</code> will <strong>destroy</strong> all our data and update de database to the last version</li>
+<li><code>rake db:autoupdate</code> will update our database without destroying our data</li>
+</ul>
+
+
+<p><em>So what happens with <code>rake db:migrate</code>? I don't want to lose everything every time I migrate!</em> Don't worry, it's aliased to <code>rake db:autoupgrade</code>, so it won't hurt you if you're too used to <code>rake db:migrate</code>.</p>
+
+<p>We can now create our database with <code>rake db:create db:autoupgrade</code> and we can create our first book in the database! Let's open our beautiful Rails console and create our first book. <code>&lt;spam&gt;</code><em>I'm using a real world example: a novel written by Patrick Rothfuss which all you fantasy-lovers should read. Oh, and people who just enjoy reading too :)</em><code>&lt;/spam&gt;</code></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='rbcon'><span class='line'><span class="go">:001 &gt; book = Book.create(title: &quot;The Name of the Wind&quot;, synopsis: &quot;A rare find these days, fit for lovers of fantasy and newcomers to the genre alike.&quot;, edition: 20)</span>
+</span><span class='line'><span class="go"> =&gt; #&lt;Book @id=1 @title=&quot;The Name of the Wind&quot; @synopsis=&quot;A rare find these days, fit for lovers of fantasy and newcomers to the genre alike.&quot; @edition=20&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><em>Wohoo! OMG it looks so beautiful!</em> As I know you liked this way of defining the model's attributes, let's take a look at migrations before we go to the controller.</p>
+
+<h2>Structural migrations and lazy-loading</h2>
+
+<p><em>Structural migrations?</em> I don't know another way to call them, so I call them this way. Structural migrations are those that change a database table structure: the ones that add or remove a field, add or remove primary keys, change a field type or add or create a table. That is, all the migrations that define the current database structure. Those migrations don't exist with DataMapper.</p>
+
+<p>Let's see the usual procedure with ActiveRecord (actually, the list order is not important):</p>
+
+<ol>
+<li>Think about the model's attributes</li>
+<li>Add validations to the model</li>
+<li>Write a migration to create the model's table and add attributes</li>
+</ol>
+
+
+<p>So we often create the migration at the last moment to ensure we don't forget any field. And I repeat, you won't need this last step with DataMapper. Let's take the example from above and suppose we want to modify some model attributes, so our Book model will now look like this:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Our DataMapper model (app/models/book.rb) after some changes  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Book</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">DataMapper</span><span class="o">::</span><span class="no">Resource</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  # Attributes</span>
+</span><span class='line'><span class="sr">  property :id, Serial</span>
+</span><span class='line'><span class="sr">  property :title, String</span>
+</span><span class='line'><span class="sr">  property :synopsis, Text</span>
+</span><span class='line'><span class="sr">  property :author, String</span>
+</span><span class='line'><span class="sr">  property :publication_year, Integer&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Notice we've added two new attributes, <code>author</code> and <code>publication_year</code>, and we have changed <code>synopsis</code>'s type from <code>String</code> to <code>Text</code>. Let's update our database with <code>rake db:migrate</code> and see what has changed:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='rbcon'><span class='line'><span class="go"> :001 &gt; Book.first</span>
+</span><span class='line'><span class="go"> =&gt; #&lt;Book @id=1 @title=&quot;The Name of the Wind&quot; @synopsis=&lt;not loaded&gt; @author=nil @publication_year=nil&gt;</span>
+</span><span class='line'><span class="go"> :002 &gt; Book.first.synopsis</span>
+</span><span class='line'><span class="go"> =&gt; &quot;A rare find these days, fit for lovers of fantasy and newcomers to the genre alike.&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>So what has happened here? the database has been successfully updated to our last version: the book doesn't have any edition number and now has an author and a publication year. <em>And what about the synopsis? What does <code>&lt;not loaded&gt;</code> mean?</em> DataMapper lazy-loads some data types to make database queries faster. This means that fields with a lot of data (like <code>Text</code> attributes) won't be loaded until they are required, like in this example.</p>
+
+<h3>Other migrations</h3>
+
+<p><em>What if I really need a migration?</em> Well, that's a good point against DataMapper: this way of migrating and updating the database is really nice, but fails when we really need to change the data. There's a gem out there called <a href="https://github.com/datamapper/dm-migrations"><em>dm-migrations</em></a> which could help you on that, but I haven't tried it, so I can't tell you anything about it right now. Sorry about that :(</p>
+
+<h2>Beautiful scoped associations</h2>
+
+<p>Let's see another database-related feature from DataMapper: <strong>scoped associations</strong>. To see the point, we have to add two new models and modify our Book model a little bit:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/models/author.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Author</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">DataMapper</span><span class="o">::</span><span class="no">Resource</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  # Attributes</span>
+</span><span class='line'><span class="sr">  property :id, Serial</span>
+</span><span class='line'><span class="sr">  property :name, String&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="c1"># Relations</span>
+</span><span class='line'>  <span class="n">has</span> <span class="n">n</span><span class="p">,</span> <span class="ss">:books</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/models/book.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Book</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">DataMapper</span><span class="o">::</span><span class="no">Resource</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  # Attributes</span>
+</span><span class='line'><span class="sr">  property :id, Serial</span>
+</span><span class='line'><span class="sr">  property :title, String</span>
+</span><span class='line'><span class="sr">  property :synopsis, Text</span>
+</span><span class='line'><span class="sr">  property :publication_year, Integer&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="c1"># Relations</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:author</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="n">has</span> <span class="n">n</span><span class="p">,</span> <span class="ss">:topics</span><span class="p">,</span> <span class="n">through</span><span class="p">:</span> <span class="no">Resource</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/models/topic.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Topic</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">DataMapper</span><span class="o">::</span><span class="no">Resource</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  # Attributes</span>
+</span><span class='line'><span class="sr">  property :id, Serial</span>
+</span><span class='line'><span class="sr">  property :name, String&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="c1"># Relations</span>
+</span><span class='line'>  <span class="n">has</span> <span class="n">n</span><span class="p">,</span> <span class="ss">:books</span><span class="p">,</span> <span class="n">through</span><span class="p">:</span> <span class="no">Resource</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><em>Woah, not so fast! What does <code>through: Resource</code> mean?</em> Another beautiful DataMapper feature! Stablishing relations through <code>Resource</code> makes DataMapper auto-create the table between <code>books</code> and <code>topics</code>, but that's not all! You want beautiful things? You'll have them. Open your <code>rails console</code> and enter the following after migrating the database:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='rbcon'><span class='line'><span class="go"> :001 &gt; book = Book.first</span>
+</span><span class='line'><span class="go"> =&gt; #&lt;Book @id=1 @title=&quot;The Name of the Wind&quot; @synopsis=&lt;not loaded&gt; @publication_year=nil @author_id=0&gt;</span>
+</span><span class='line'><span class="go"> :002 &gt; book.author = Author.create(name: &quot;Patrick Rothfuss&quot;)</span>
+</span><span class='line'><span class="go"> =&gt; #&lt;Author @id=2 @name=&quot;Patrick Rothfuss&quot;&gt;</span>
+</span><span class='line'><span class="go"> :003 &gt; book.topics</span>
+</span><span class='line'><span class="go"> =&gt; []</span>
+</span><span class='line'><span class="go"> :004 &gt; book.topics &amp;lt;&amp;lt; Topic.create(name: &quot;fantasy&quot;)</span>
+</span><span class='line'><span class="go"> =&gt; [#&lt;Topic @id=1 @name=&quot;fantasy&quot;&gt;]</span>
+</span><span class='line'><span class="go"> :005 &gt; book.topics</span>
+</span><span class='line'><span class="go"> =&gt; [#&lt;Topic @id=1 @name=&quot;fantasy&quot;&gt;]</span>
+</span><span class='line'><span class="go"> :006 &gt; book.save</span>
+</span><span class='line'><span class="go"> =&gt; true</span>
+</span><span class='line'><span class="go"> :007 &gt; BookTopic.all</span>
+</span><span class='line'><span class="go"> =&gt; [#&lt;BookTopic @book_id=1 @topic_id=1&gt;]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><em>WAIT AGAIN! What's that??</em> Amazing, right? When defining a relation through <code>Resource</code>, DataMapper creates a class so that relation becomes an object! Let's try to destroy this one!</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='rbcon'><span class='line'><span class="go"> :008 &gt; BookTopic.first.destroy</span>
+</span><span class='line'><span class="go"> =&gt; true</span>
+</span><span class='line'><span class="go"> :009 &gt; Book.first.topics</span>
+</span><span class='line'><span class="go"> =&gt; []</span>
+</span><span class='line'><span class="go"> :010 &gt; BookTopic.create(book: Book.first, topic: Topic.first)</span>
+</span><span class='line'><span class="go"> =&gt; #&lt;BookTopic @book_id=1 @topic_id=1&gt;</span>
+</span><span class='line'><span class="go"> :011 &gt; Book.first.topics</span>
+</span><span class='line'><span class="go"> =&gt; [#&lt;Topic @id=1 @name=&quot;fantasy&quot;&gt;]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>So you can play with relations modifying directly the relation object. Let's keep with the scoped associations we were talking about before and try this on our <code>rails console</code> again:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='rbcon'><span class='line'><span class="go"> :012 &gt; Author.first.books.topics</span>
+</span><span class='line'><span class="go"> =&gt; [#&lt;Topic @id=1 @name=&quot;fantasy&quot;&gt;]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>That's how we get all the topics an author has written about without using dirty Arel Table relations, try this with ActiveRecord ;) Actually, associations are a really powerful resource with DataMapper. We could keep talking about them forever, but you can also take a look at the <a href="http://datamapper.org/docs/associations.html">DataMapper associations docs page</a>, which is pretty neat and clear about that. You can also take a look at the <a href="http://datamapper.org/docs/find.html">Finding docs page</a>, where you'll find another amazing feature with associations: <strong>queries combination</strong>.</p>
+
+<h2>Rails controllers with DataMapper</h2>
+
+<p>Just to end the post, I wanted to show you how a Rails controler looks with Datamapper. I've uploaded a gist with my BooksController so you can have a look at it:</p>
+
+<p><div><script src='https://gist.github.com/1268166.js?file='></script>
+<noscript><pre><code># This class is responsible for the Books REST interface.
+#
+class BooksController &lt; ApplicationController
+
+  # Get a book by the id
+  before_filter :get_book, only: [:edit, :update, :show, :destroy]
+
+  #  Renders the form to create a new Book.
+  #
+  def new
+    @book = Book.new
+  end
+
+  # Creates a new Book from the params and redirects to edit view.
+  #
+  def create
+    @book = Book.create(params[:book])
+    redirect_to book_path(@book)
+  end
+
+  # Renders the form for a given book. 
+  #
+  def edit
+  end
+
+  # Updates a Book from the params and redirects to edit view.
+  #
+  def update
+    @book.update(params[:book])
+    redirect_to edit_book_path(@book)
+  end
+
+  # Renders all books
+  #
+  def index
+    @books = Book.all
+  end
+
+  # Renders a Book
+  #
+  def show
+  end
+
+  # Destroys the Book object from database
+  #
+  def destroy
+    @book.destroy
+    redirect_to action: :index
+  end
+
+  private
+
+  def get_book
+    @book = Book.get(params[:id])
+  end
+end
+</code></pre></noscript></div>
+</p>
+
+<p>As you see, it's very similar to an ActiveRecord one, except for one thing: <strong>DataMapper doesn't have a <code>find</code> method</strong>. So use the <code>get</code> method, which works pretty similar to the first one :)</p>
+
+<h2>Final thoughts</h2>
+
+<p>I must say I love the DataMapper approach about the model, this way of clearly showing what attributes a model has and the clean way DataMapper migrates the database. I've been looking for a good way to have my models information properly sorted and easy to access, and I think I can achieve it with DataMapper and some design pattern like <a href="http://www.objectmentor.com/resources/articles/srp.pdf">Single Responsibility Principle</a>. I just wanted to introduce you to DataMapper, an ORM not as used as ActiveRecord in Rails world, but I really think you should give it a try.</p>
+
+<p>As a final note, you can find a debate on using DataMapper or ActiveRecord <a href="http://wrangl.com/datamapper-activerecord">here</a>. You'll find some of the points explained in this post and some more to help you decide :)</p>
+]]></content>
+  </entry>
+  
+</feed>
