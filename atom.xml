@@ -4,7 +4,7 @@
   <title><![CDATA[Mr. Casals]]></title>
   <link href="http://mrcasals.github.com/atom.xml" rel="self"/>
   <link href="http://mrcasals.github.com/"/>
-  <updated>2012-02-27T18:07:48+01:00</updated>
+  <updated>2012-04-11T19:23:00+02:00</updated>
   <id>http://mrcasals.github.com/</id>
   <author>
     <name><![CDATA[Marc Riera]]></name>
@@ -12,6 +12,93 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[My first Octopress plugin: Spotify Play button]]></title>
+    <link href="http://mrcasals.github.com/blog/2012/04/11/my-first-octopress-plugin-spotify-play-button/"/>
+    <updated>2012-04-11T18:02:00+02:00</updated>
+    <id>http://mrcasals.github.com/blog/2012/04/11/my-first-octopress-plugin-spotify-play-button</id>
+    <content type="html"><![CDATA[<p>I&#8217;m a big fan of Spotify. I use it everyday, I pay my monthly fee to get rid of
+those annoying ads (I don&#8217;t know what ads do people get in other countries, but
+Spanish ones are really annoying&#8230; <em>really</em>). I was really happy when they
+launched their <a href="https://developer.spotify.com/technologies/web-api/">Metadata API</a>, but <a href="http://www.spotify.com/se/blog/archives/2012/04/11/introducing-the-spotify-play-button/">today&#8217;s
+announcement</a> is even better.</p>
+
+<h2>Embed Spotify everywhere&#8230; even Octopress!</h2>
+
+<p>Spotify&#8217;s new feature <a href="https://developer.spotify.com/technologies/spotify-play-button/">Play Button</a> lets you embed a single track,
+an album or a playlist to any web page, giving you the possibility to put a
+soundtrack anywhere. So I decided to make an Octopress plugin for this.</p>
+
+<p>The plugin is pretty simple. You have to use the <code>spotify</code> liquid tag and, as
+param, one of the following examples.</p>
+
+<p>In the next release it will let you specify the height and the width of the
+widget. I hope it won&#8217;t take very long :)</p>
+
+<h3>A single track</h3>
+
+<p>Example input:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>spotify spotify:track:4vVE8YDntxjT0gld4bdd4x</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Example output:</p>
+
+<div class='spotify_play_button'>
+<iframe src='https://embed.spotify.com/?uri=spotify:track:4vVE8YDntxjT0gld4bdd4x ' width='300' height='380' frameborder='0' allowtransparency='true'></iframe>
+</div>
+
+
+<h3>An album</h3>
+
+<p>Example input:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>spotify spotify:album:2B9q4KPjOEYu885Keo9dfX</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Example output:</p>
+
+<div class='spotify_play_button'>
+<iframe src='https://embed.spotify.com/?uri=spotify:album:2B9q4KPjOEYu885Keo9dfX ' width='300' height='380' frameborder='0' allowtransparency='true'></iframe>
+</div>
+
+
+<h3>A playlist</h3>
+
+<p>Example input:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>spotify spotify:user:mrc2407:playlist:1O9JUUKiMqA8LXahz61fCH</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Example output:</p>
+
+<div class='spotify_play_button'>
+<iframe src='https://embed.spotify.com/?uri=spotify:user:mrc2407:playlist:1O9JUUKiMqA8LXahz61fCH ' width='300' height='380' frameborder='0' allowtransparency='true'></iframe>
+</div>
+
+
+<h3>Some independent tracks</h3>
+
+<p>Example input:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>spotify spotify:trackset:PREFEREDTITLE:5Z7ygHQo02SUrFmcgpwsKW,1x6ACsKV4UdWS2FMuPFUiT,4bi73jCM02fMpkI11Lqmfe</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Example output:</p>
+
+<div class='spotify_play_button'>
+<iframe src='https://embed.spotify.com/?uri=spotify:trackset:PREFEREDTITLE:2fdMAIsNH4wY7RRda8aCfL,4ik6sbfwyVd9QoU3nUHvKI ' width='300' height='380' frameborder='0' allowtransparency='true'></iframe>
+</div>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[An approach to DataMapper, an alternative to ActiveRecord]]></title>

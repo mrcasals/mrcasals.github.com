@@ -2,18 +2,24 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://mrcasals.github.com/blog/2012/02/26/back-online/</loc>
-        <lastmod>2012-02-26T18:58:05+01:00</lastmod>
+        <lastmod>2012-04-11T18:38:49+02:00</lastmod>
     </url>
     <url>
         <loc>http://mrcasals.github.com/blog/2012/02/27/approach-to-datamapper/</loc>
-        <lastmod>2012-02-27T18:07:04+01:00</lastmod>
+        <lastmod>2012-04-11T18:38:49+02:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://mrcasals.github.com/blog/2012/04/11/my-first-octopress-plugin-spotify-play-button/
+        </loc>
+        <lastmod>2012-04-11T19:22:15+02:00</lastmod>
     </url>
     <url>
         <loc>http://mrcasals.github.com/blog/archives/</loc>
-        <lastmod>2012-02-27T18:07:04+01:00</lastmod>
+        <lastmod>2012-04-11T19:22:15+02:00</lastmod>
     </url>
     <url>
         <loc>http://mrcasals.github.com/</loc>
-        <lastmod>2012-02-27T18:07:04+01:00</lastmod>
+        <lastmod>2012-04-11T19:22:15+02:00</lastmod>
     </url>
 </urlset>
