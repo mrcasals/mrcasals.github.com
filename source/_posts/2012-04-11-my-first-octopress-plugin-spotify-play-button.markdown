@@ -64,4 +64,4 @@ Example output:
 [metadata-api]: https://developer.spotify.com/technologies/web-api/
 [play-blogpost]: http://www.spotify.com/se/blog/archives/2012/04/11/introducing-the-spotify-play-button/
 [play-button]: https://developer.spotify.com/technologies/spotify-play-button/
-[spotify-play-repo]: https://github.com/mrcasals/spotify_play_plugin
+[spotify-play-repo]: https://github.com/mrcasals/octopress_spotify_play_plugin
